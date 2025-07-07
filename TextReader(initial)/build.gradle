@@ -1,0 +1,11 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.2.1"  // AGP 7.2.1 按用户要求
+    }
+}
+plugins {
+    id 'com.android.application' version '7.2.1' apply false
+    id 'com.android.library' version '7.2.1' apply false
+}
+// 确保 AGP 版本与 Gradle 版本匹配（示例）

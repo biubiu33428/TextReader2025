@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="book" ></dbname>
+
+    <version value="3" ></version>
+
+    <list>
+        <mapping class="com.my.textreader.db.BookList"></mapping>
+        <mapping class="com.my.textreader.db.BookMarks"></mapping>
+        <mapping class="com.my.textreader.db.PurchaseRecord"></mapping>
+    </list>
+</litepal>

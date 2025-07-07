@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请填写书籍信息"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 分类选择 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="分类："
+        android:textSize="14sp"
+        android:textColor="@color/read_textColor"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinner_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 作者输入 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="作者："
+        android:textSize="14sp"
+        android:textColor="@color/read_textColor"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/et_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入作者姓名"
+        android:maxLines="1"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/et_shape" />
+
+    <!-- 图书简介 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="图书简介："
+        android:textSize="14sp"
+        android:textColor="@color/read_textColor"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/et_description"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="请输入图书简介"
+        android:maxLines="4"
+        android:gravity="top"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/et_shape" />
+
+    <!-- 评分 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="评分："
+        android:textSize="14sp"
+        android:textColor="@color/read_textColor"
+        android:layout_marginBottom="8dp" />
+
+    <RatingBar
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:rating="5"
+        android:stepSize="0.5"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 图书封面 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="图书封面："
+        android:textSize="14sp"
+        android:textColor="@color/read_textColor"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/iv_cover_preview"
+            android:layout_width="60dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/border_set"
+            android:src="@mipmap/cover_default_new" />
+
+        <Button
+            android:id="@+id/btn_select_cover"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp"
+            android:text="选择封面"
+            android:background="@drawable/button_bg"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <!-- 按钮 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="取消"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button_bg"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="确定"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/button_bg"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+</LinearLayout> 
