@@ -1,12 +1,16 @@
 package com.my.textreader.activity;
 
+import static org.litepal.tablemanager.Connector.getWritableDatabase;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -36,6 +40,7 @@ import com.my.textreader.R;
 import com.my.textreader.base.BaseActivity;
 import com.my.textreader.db.BookList;
 import com.my.textreader.db.BookMarks;
+import com.my.textreader.db.DbHelper;
 import com.my.textreader.dialog.PageModeDialog;
 import com.my.textreader.dialog.SettingDialog;
 import com.my.textreader.util.BrightnessUtil;
@@ -50,6 +55,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import android.content.ContentValues;
+
 
 public class ReadActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ReadActivity";
@@ -405,8 +413,23 @@ public class ReadActivity extends BaseActivity implements View.OnClickListener {
             if (pageFactory.getCurrentPage() != null) {
                 List<BookMarks> bookMarksList = DataSupport.where("bookpath = ? and begin = ?", pageFactory.getBookPath(), pageFactory.getCurrentPage().getBegin() + "").find(BookMarks.class);
 
+                // 获取当前登录用户
+                SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                String user = prefs.getString("username", "unknown_user");
+
+
                 if (!bookMarksList.isEmpty()) {
                     Toast.makeText(ReadActivity.this, "该书签已存在", Toast.LENGTH_SHORT).show();
+                    // 记录一次查询行为
+                    DbHelper.getInstance(ReadActivity.this).insertAuditLog(
+                            user,
+                            "SELECT",
+                            "book_marks",
+                            "查询是否存在书签：begin=" + pageFactory.getCurrentPage().getBegin()
+                    );
+                    // 导出审计日志
+                    DbHelper.getInstance(ReadActivity.this).exportAuditLogToCSV(ReadActivity.this);
+
                 } else {
                     BookMarks bookMarks = new BookMarks();
                     String word = "";
@@ -423,9 +446,24 @@ public class ReadActivity extends BaseActivity implements View.OnClickListener {
                         bookMarks.setBookpath(pageFactory.getBookPath());
                         bookMarks.save();
 
+
+                        // 截取书签内容前3个字符（如果word长度不足3则全部显示）
+                        String shortWord = word.length() > 3 ? word.substring(0, 3) : word;
+                        // 写审计日志
+                        DbHelper.getInstance(ReadActivity.this).insertAuditLog(
+                                user,
+                                "INSERT",
+                                "book_marks",
+                                "添加书签，内容前3字：" + shortWord
+                        );
+
+
                         Toast.makeText(ReadActivity.this, "书签添加成功", Toast.LENGTH_SHORT).show();
+                        // 添加后立即导出审计日志
+                        DbHelper.getInstance(ReadActivity.this).exportAuditLogToCSV(ReadActivity.this);
                     } catch (SQLException e) {
                         Toast.makeText(ReadActivity.this, "该书签已存在", Toast.LENGTH_SHORT).show();
+
                     } catch (Exception e) {
                         Toast.makeText(ReadActivity.this, "添加书签失败", Toast.LENGTH_SHORT).show();
                     }

@@ -13,6 +13,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import android.util.Log;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
 
 
 
@@ -71,25 +75,43 @@ public void onCreate(SQLiteDatabase db) {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-
+    //导出审计 CSV 方法
     public void exportAuditLogToCSV(Context context) {
         openDatabase();
-        Cursor cursor = db.query("audit_log", null, null, null, null, null, "timestamp DESC");
+        Cursor cursor = db.query("audit_log", null, null, null, null, null, "timestamp ASC");
         StringBuilder csv = new StringBuilder();
-        csv.append("user,action,table,sql_text,timestamp\n");
+
+        File file = new File(context.getExternalFilesDir(null), "audit_log.csv");
+        boolean writeHeader = true;
+
+        if (file.exists() && file.length() > 0) {
+            // 文件存在且非空，说明表头已写过，后续追加数据时不写表头
+            writeHeader = false;
+        }
+
+        if (writeHeader) {
+            csv.append("user,action,table,sql_text,timestamp\n");
+        }
 
         while (cursor.moveToNext()) {
             csv.append(cursor.getString(cursor.getColumnIndex("user"))).append(",");
             csv.append(cursor.getString(cursor.getColumnIndex("action"))).append(",");
             csv.append(cursor.getString(cursor.getColumnIndex("table_name"))).append(",");
-            csv.append(cursor.getString(cursor.getColumnIndex("sql_text")).replace(",", " ")).append(",");
+            String sqlText = cursor.getString(cursor.getColumnIndex("sql_text"));
+            if (sqlText != null) {
+                // 替换掉内容中的逗号，避免csv格式错乱
+                sqlText = sqlText.replace(",", " ");
+            } else {
+                sqlText = "";
+            }
+            csv.append(sqlText).append(",");
             csv.append(cursor.getString(cursor.getColumnIndex("timestamp"))).append("\n");
         }
 
         cursor.close();
 
         try {
-            File file = new File(context.getExternalFilesDir(null), "audit_log.csv");
+            // 追加写入文件
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(csv.toString().getBytes());
             fos.close();
@@ -100,6 +122,7 @@ public void onCreate(SQLiteDatabase db) {
     }
 
 
+
     // 插入审计日志
     public void insertAuditLog(String user, String action, String table, String sqlText) {
         openDatabase();
@@ -108,8 +131,14 @@ public void onCreate(SQLiteDatabase db) {
         values.put("action", action);
         values.put("table_name", table);
         values.put("sql_text", sqlText);
+
+        // 添加时间戳字段
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        values.put("timestamp", time);
+
         db.insert("audit_log", null, values);
     }
+
 
     // 插入用户
     public long insterUser(String name, String pwd) {

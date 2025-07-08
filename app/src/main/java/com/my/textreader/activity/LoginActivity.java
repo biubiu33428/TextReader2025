@@ -1,6 +1,7 @@
 package com.my.textreader.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -91,6 +92,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        登录成功跳转主界面
         if (login) {
             Toast.makeText(this, "成功", Toast.LENGTH_SHORT).show();
+
+            // 登录成功后保存用户名
+            SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            prefs.edit().putString("username", username).apply();
 
             // 登录成功后导出审计日志
             DbHelper.getInstance(LoginActivity.this).exportAuditLogToCSV(LoginActivity.this);
